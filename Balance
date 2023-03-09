@@ -1,0 +1,100 @@
+#@title Ingreso de datos 
+Caudal_Total=225000#@param {type:"number"}
+BSW=70#@param {type:"number"}
+API=30#@param {type:"number"}
+Eficiencia=95#@param {type:"number"}
+Diametro=144#@param {type:"number"}
+Longitud=60#@param {type:"number"}
+Aceite_Residual=600#@param {type:"number"}
+Nivel_Operativo=75#@param {type:"number"}
+Agua_Emulusionada=15#@param {type:"number"}
+Iteraciones=5#@param {type:"number"}
+Balance(Caudal_Total,BSW,Agua_Emulusionada,Iteraciones,Eficiencia,Aceite_Residual)
+Tiempo(Diametro,Nivel_Operativo,Longitud)
+
+def Balance(Caudal_Total,BSW,Agua_Emulusionada,Iteraciones,Eficiencia,Aceite_Residual):
+  import plotly.graph_objects as go
+  AguaTotalInlet=round((Caudal_Total*BSW)/100,4)
+  PetroleoInlet=round(Caudal_Total*(100-BSW)/100,4)
+  AguaEmulInlet=round(PetroleoInlet*Agua_Emulusionada/(100-Agua_Emulusionada),4)
+  EmulsionInlet=round(PetroleoInlet+AguaEmulInlet,4)
+  TotalInlet=round(AguaTotalInlet+PetroleoInlet,4)
+  Nombres=['Agua Total','Petróleo','Agua Emulsionada','Emulsión','TOTAL']
+  Resultados=[AguaTotalInlet,PetroleoInlet,AguaEmulInlet,EmulsionInlet,TotalInlet]
+  Unidades=['BWPD','BOPD','BWPD','BFPD','BFPD']
+  fig = go.Figure(data=[go.Table(header=dict(values=['','<b>INLET<b>',''],
+                                              line_color='darkslategray',
+                                              font=dict(color='black',size=14)),
+                                  cells=dict(values=[Nombres,Resultados,Unidades],
+                                            line_color='darkslategray',)
+  )])
+  fig.update_layout(height=160, width=700,margin=dict(r=10, l=10, t=10, b=0))
+  fig.show()
+  Eff=Eficiencia
+  PetroleoPuntoA=[]
+  AguaEmulPuntoA=[]
+  AguaLibrePuntoB100=[]
+  AguaLibrePuntoB95=[]
+  AguaLibrePuntoA5=[]
+  AceiteResidualPuntoB=[]
+  IotalPuntoA=[]
+  IotalPuntoB=[]
+  TOTAL=[]
+  Numero=[]
+  Datos=[[],[]]
+  for i in range(0, Iteraciones):
+    Numero.append(i+1)
+    if i==0:
+      PetroleoPuntoA.append(PetroleoInlet)
+      AguaEmulPuntoA.append(AguaEmulInlet)
+      AguaLibrePuntoB100.append(round(AguaTotalInlet-AguaEmulInlet,4))
+      AguaLibrePuntoB95.append(round((AguaLibrePuntoB100[i]*Eficiencia)/100,4))
+      AguaLibrePuntoA5.append(round((AguaLibrePuntoB100[i]*(100-Eficiencia))/100,4))
+      AceiteResidualPuntoB.append(0)
+      IotalPuntoA.append(round(PetroleoPuntoA[i]+AguaEmulPuntoA[i]+AguaLibrePuntoA5[i],4))
+      IotalPuntoB.append(round(AguaLibrePuntoB95[i]+AceiteResidualPuntoB[i],4))
+      TOTAL.append(IotalPuntoA[i]+IotalPuntoB[i])
+      
+    if i%2!=0:
+      AguaLibrePuntoB95.append(AguaLibrePuntoB95[i-1])
+      AceiteResidualPuntoB.append(round(AguaLibrePuntoB95[i-1]*Aceite_Residual/(1000000-Aceite_Residual),4))
+      PetroleoPuntoA.append(round(PetroleoPuntoA[i-1]-(AceiteResidualPuntoB[i]-AceiteResidualPuntoB[i-1]),4))
+      AguaEmulPuntoA.append(AguaEmulPuntoA[i-1])
+      AguaLibrePuntoA5.append(AguaLibrePuntoA5[i-1])
+      IotalPuntoA.append(round(PetroleoPuntoA[i]+AguaEmulPuntoA[i]+AguaLibrePuntoA5[i],4))
+      IotalPuntoB.append(round(AguaLibrePuntoB95[i]+AceiteResidualPuntoB[i],4))
+      TOTAL.append(IotalPuntoA[i]+IotalPuntoB[i])
+      
+    if i%2==0 and i!=0:
+      PetroleoPuntoA.append(PetroleoPuntoA[i-1])
+      AguaEmulPuntoA.append(round(PetroleoPuntoA[i]*Agua_Emulusionada/(100-Agua_Emulusionada),4))
+      AguaLibrePuntoB95.append(AguaLibrePuntoB95[i-1]+(AguaEmulPuntoA[i-1]-AguaEmulPuntoA[i]))
+      AguaLibrePuntoA5.append(AguaLibrePuntoA5[i-1])
+      AceiteResidualPuntoB.append(AceiteResidualPuntoB[i-1])
+      IotalPuntoA.append(round(PetroleoPuntoA[i]+AguaEmulPuntoA[i]+AguaLibrePuntoA5[i],4))
+      IotalPuntoB.append(round(AguaLibrePuntoB95[i]+AceiteResidualPuntoB[i],4))
+      TOTAL.append(IotalPuntoA[i]+IotalPuntoB[i])
+
+  Nombres2=['Iteracion #','Petróleo (BOPD)','Agua Emulsionada (BWPD)','Agua '+str(100-Eff)+'% (BWPD)','<b>Total Punto A (BWPD)<b>',
+            'Agua Libre '+str(Eff)+'% (BWPD)','Aceite Residual (BOPD)','<b>Total Punto B (BWPD)<b>','<b>TOTAL (BWPD)<b>']
+  Datos=(Numero,PetroleoPuntoA,AguaEmulPuntoA,AguaLibrePuntoA5,IotalPuntoA,
+        AguaLibrePuntoB95,AceiteResidualPuntoB,IotalPuntoB,TOTAL)
+
+  fig2 = go.Figure(data=[go.Table(header=dict(values=Nombres2,
+                                                line_color='darkslategray',
+                                                font=dict(color='black',size=14),align='center'),
+                                    cells=dict(values=Datos
+                                              ,line_color='darkslategray',align='center')
+  )])
+  fig2.update_layout(height=250, width=1100,margin=dict(r=10, l=10, t=10, b=0))
+  fig2.show()
+  
+def Tiempo(Diametro,Nivel_Operativo,Longitud):
+  import math
+  AlturaOp=Diametro*Nivel_Operativo/100
+  Angulo=math.acos((AlturaOp-Diametro/2)/(Diametro))*180/math.pi
+  Area=((math.pi*(Diametro/2)**2)-((((Diametro/2)**2))/(2))*((Angulo*math.pi/180)-(math.sin(Angulo*math.pi/180))))/12**2
+  Volumen=Area*Longitud
+  Caudal_Totalft3=(Caudal_Total*5.615)/(24*60)
+  TiempoResidencia=Volumen/Caudal_Totalft3
+  print('El tiempo de Residencia es de:',round(TiempoResidencia,4))
