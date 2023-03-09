@@ -1,0 +1,9 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+data=pd.read_excel('/content/drive/MyDrive/Datos crudo WTI.xlsx')
+data
+figura1,ax=plt.subplots(figsize=(18,6))
+ax.plot(data['Fecha'],data['Último'],color='blue',linewidth=2)
+plt.xlabel('Tiempo (Años)',size=15)
+plt.ylabel('Precio ($)',size=15)
+plt.title('Precio del petróleo (2009-2023)',size=25)
