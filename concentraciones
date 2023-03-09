@@ -1,0 +1,34 @@
+#@title Ingreso de datos 
+#@markdown Una plataforma de producción produce de manera continua:
+Caudal_Total = 75000 #@param {type:"number"}
+BSW=45 #@param {type:"number"}
+Diametro=12 #@param {type:"number"}
+Longitud=15 #@param {type:"number"}
+Tiempo=12 #@param {type:"number"}
+Bache=2 #@param {type:"number"}
+Desmulsificante=75 #@param {type:"number"}
+
+Qw=((BSW/100)*(Caudal_Total))*Bache/Tiempo
+VolumenBio=((Qw*500)/999500)*42
+print('Eñ volumen de biocida que se debe usar al enviar el pig es de:',round(VolumenBio,4),'galones')
+
+Velocidad=((Caudal_Total*2*5.615)/((3.14159265359/4)*(Diametro/12)**2))/(3.28*24*60*60)
+print('La velocidad a la que va el pig es de:',round(Velocidad,4),'m/s')
+
+Tempo=((Longitud*1000*3.28*(3.14159265359/4)*(Diametro/12)**2)/(Caudal_Total*2*5.615))*24*60
+print('El Tiempo en el que llega el pig es de:',round(Tempo,4),'min')
+
+Qo=(Caudal_Total-(Caudal_Total*(BSW/100)))
+VolumenDesu=((Qo*35)/(1000000-35))*42
+print('El volumen de Desmulsificante que se debe usar es de:',round(VolumenDesu,4),'gal')
+
+Qogal=Qo*42
+Volu75desu=(Desmulsificante*1000000)/(Qogal+Desmulsificante)
+print('La concentracion del Desmulsificante es de:',round(VolumenDesu,4),'gal')
+
+Nombres=('Caudal agua','Volumen Biocida','Velocidad pig','Tiempo','Caudal Oil',
+          'Volumen Desmulsificante','Caudal Oil','Concentracion Desmulsificante')
+Resultados=(Qw,VolumenBio,Velocidad,Tempo,Qo,VolumenDesu,Qogal,Volu75desu)
+Unidades=('BWPD','gal','m/s','min','BOPD','gal','gal/dia','ppm')
+for i in range(0, len(Resultados)):
+            print(Nombres[i],':',round(Resultados[i],4),(Unidades[i]))
