@@ -1,0 +1,374 @@
+#@title Ingreso de datos 
+#@markdown Seleccione la magnitud e ingrese el valor a convertir :
+Magnitud = "Presion" #@param ["Volumen", "Caudal", "Densidad", "Presion"]
+Valor=507 #@param {type:"number"}
+#@markdown Escoger la unidad en la seccion de la magnitud seleccionada anteriormente :
+Unidad_Volumen="in^3" #@param ["bbl","Acre-ft","m^3", "gal", "ft^3", "in^3"]
+Unidad_Caudal="ft^3/Dia" #@param ["m^3/Dia", "L/Dia", "bbl/hora","bbl/Dia","gal/min", "gal/hora", "gal/Dia","ft^3/Dia"]
+Unidad_Densidad="lb/gal" #@param ["Kg/m^3", "Kg/L", "g/L","mg/mL","lb/ft^3", "lb/gal"]
+Unidad_Presion="lb/ft^2" #@param ["bar","Pa", "KPa", "kgf/cm^2","kgf/m^2","N/m^2", "lb/in^2", "lb/ft^2"]
+
+if Magnitud=='Volumen':
+  Datos=ConvertirVolumen(Magnitud,Unidad_Volumen,Valor)
+
+if Magnitud=='Caudal':
+  Datos=ConvertirCaudal(Magnitud,Unidad_Caudal,Valor)
+
+if Magnitud=='Densidad':
+  Datos=ConvertirDensidad(Magnitud,Unidad_Densidad,Valor)
+
+if Magnitud=='Presion':
+  Datos=ConvertirPresion(Magnitud,Unidad_Presion,Valor)
+  
+def ConvertirVolumen (Magnitud,Unidad_Volumen,Valor):
+  if Unidad_Volumen=='bbl':
+    VBarril=Valor
+    VAcrePie= 0.0001289*VBarril
+    VMetro3= 0.159*VBarril
+    Vgalon= 42*VBarril
+    Vft3= 5.615*VBarril
+    Vin3= 9702*VBarril
+    Resultados=[VBarril,VAcrePie,VMetro3,Vgalon,Vft3,Vin3]
+
+  if Unidad_Volumen=='Acre-ft':
+    VAcrePie=Valor
+    VBarril= 7758*VAcrePie
+    VMetro3= 1233*VAcrePie
+    Vgalon= 325851*VAcrePie
+    Vft3= 43560*VAcrePie
+    Vin3= 75271680*VAcrePie
+    Resultados=[VBarril,VAcrePie,VMetro3,Vgalon,Vft3,Vin3]
+              
+  if Unidad_Volumen=='m^3':
+    VMetro3=Valor
+    VBarril= 6.29*VMetro3
+    VAcrePie= 0.0008107*VMetro3
+    Vgalon= 264.2*VMetro3
+    Vft3= 35.31*VMetro3
+    Vin3= 61024*VMetro3
+    Resultados=[VBarril,VAcrePie,VMetro3,Vgalon,Vft3,Vin3]
+
+  if Unidad_Volumen=='gal':
+    Vgalon=Valor
+    VBarril= 0.02381*Vgalon
+    VAcrePie= 0.000003069*Vgalon
+    VMetro3= 0.003785*Vgalon
+    Vft3= 0.1337*Vgalon
+    Vin3= 231*Vgalon
+    Resultados=[VBarril,VAcrePie,VMetro3,Vgalon,Vft3,Vin3]
+
+  if Unidad_Volumen=='ft^3':
+    Vft3=Valor
+    VBarril= 0.1781*Vft3
+    VAcrePie= 0.00002296*Vft3
+    VMetro3= 0.02832*Vft3
+    Vgalon= 7.481*Vft3
+    Vin3= 1728*Vft3
+    Resultados=[VBarril,VAcrePie,VMetro3,Vgalon,Vft3,Vin3]
+
+  if Unidad_Volumen=='in^3':
+    Vin3=Valor
+    VBarril= 0.0001031*Vin3
+    VAcrePie= 0.00000001329*Vin3
+    VMetro3= 0.00001639*Vin3
+    Vgalon= 0.004329*Vin3
+    Vft3= 0.0005787*Vin3
+    Resultados=[VBarril,VAcrePie,VMetro3,Vgalon,Vft3,Vin3]
+
+  Unidades=['bbl','Acre-ft','m^3', 'gal', 'ft^3', 'in^3']
+  Nombres=['Barril','Acre-pie','Metro cúbico', 'Galón', 'Pie cúbico', 'Pulgada cúbica']
+  for i in range(0, len(Resultados)):
+    Resultados[i]=round(Resultados[i],4)
+
+  import plotly.graph_objects as go
+  fig = go.Figure(data=[go.Table(header=dict(values=['<b>Nombres<b>','<b>Resultados<b>','<b>Unidades<b>'],
+                                             line_color='darkslategray',
+                                             font=dict(color='black',size=14)),
+                                 cells=dict(values=[Nombres,Resultados,Unidades],
+                                            line_color='darkslategray',)
+  )])
+  fig.update_layout(height=180, width=700,margin=dict(r=10, l=10, t=10, b=0))
+  fig.show()
+  
+ def ConvertirCaudal (Magnitud,Unidad_Caudal,Valor):  
+  if Unidad_Caudal=='m^3/Dia':
+      Qm3Dia=Valor
+      QLDia= 1000*Qm3Dia
+      Qbblhora= 0.2621*Qm3Dia
+      QbblDia= 6.29*Qm3Dia
+      Qgalmin= 0.1835*Qm3Dia
+      Qgalhora= 11.01*Qm3Dia
+      QgalDia= 264.2*Qm3Dia
+      Qft3Dia= 35.31*Qm3Dia
+      Resultados=[Qm3Dia,QLDia,Qbblhora,QbblDia,Qgalmin,Qgalhora,QgalDia,Qft3Dia]
+
+  if Unidad_Caudal=='L/Dia':
+      QLDia=Valor
+      Qm3Dia= 0.00004167*QLDia
+      Qbblhora= 0.0002621*QLDia
+      QbblDia= 0.00629*QLDia
+      Qgalmin= 0.0001835*QLDia
+      Qgalhora= 0.01101*QLDia
+      QgalDia= 0.2642*QLDia
+      Qft3Dia= 0.03531*QLDia
+      Resultados=[Qm3Dia,QLDia,Qbblhora,QbblDia,Qgalmin,Qgalhora,QgalDia,Qft3Dia]
+
+  if Unidad_Caudal== 'bbl/hora':
+      Qbblhora=Valor
+      Qm3Dia= 3.816*Qbblhora
+      QLDia= 3816*Qbblhora
+      QbblDia= 24*Qbblhora
+      Qgalmin= 0.7*Qbblhora
+      Qgalhora= 42*Qbblhora
+      QgalDia= 1008*Qbblhora
+      Qft3Dia= 134.8*Qbblhora
+      Resultados=[Qm3Dia,QLDia,Qbblhora,QbblDia,Qgalmin,Qgalhora,QgalDia,Qft3Dia]
+
+  if Unidad_Caudal=='bbl/Dia':
+      QbblDia=Valor
+      Qm3Dia= 0.159*QbblDia
+      QLDia= 159*QbblDia
+      Qbblhora= 0.04167*QbblDia
+      Qgalmin= 0.02917*QbblDia
+      Qgalhora= 1.75*QbblDia
+      QgalDia= 42*QbblDia
+      Qft3Dia= 5.615*QbblDia
+      Resultados=[Qm3Dia,QLDia,Qbblhora,QbblDia,Qgalmin,Qgalhora,QgalDia,Qft3Dia]
+
+  if Unidad_Caudal=='gal/min':
+      Qgalmin=Valor
+      Qm3Dia= 5.451*Qgalmin
+      QLDia= 5.451*Qgalmin
+      Qbblhora= 1.429*Qgalmin
+      QbblDia= 34.29*Qgalmin
+      Qgalhora= 60*Qgalmin
+      QgalDia= 1440*Qgalmin
+      Qft3Dia= 192.5*Qgalmin
+      Resultados=[Qm3Dia,QLDia,Qbblhora,QbblDia,Qgalmin,Qgalhora,QgalDia,Qft3Dia]
+      
+  if Unidad_Caudal=='gal/hora':
+      Qgalhora=Valor
+      Qm3Dia= 0.09085*Qgalhora
+      QLDia= 90.85*Qgalhora
+      Qbblhora= 0.02381*Qgalhora
+      QbblDia= 0.5714*Qgalhora
+      Qgalmin= 0.01667*Qgalhora
+      QgalDia= 24*Qgalhora
+      Qft3Dia= 3.208*Qgalhora
+      Resultados=[Qm3Dia,QLDia,Qbblhora,QbblDia,Qgalmin,Qgalhora,QgalDia,Qft3Dia]
+      
+  if Unidad_Caudal=='gal/Dia':
+      QgalDia=Valor
+      Qm3Dia= 0.003785*QgalDia
+      QLDia= 3.785*QgalDia
+      Qbblhora= 0.0009921*QgalDia
+      QbblDia= 0.02381*QgalDia
+      Qgalmin= 0.0006944*QgalDia
+      Qgalhora= 0.04167*QgalDia
+      Qft3Dia= 0.1337*QgalDia
+      Resultados=[Qm3Dia,QLDia,Qbblhora,QbblDia,Qgalmin,Qgalhora,QgalDia,Qft3Dia]
+
+  if Unidad_Caudal=='ft^3/Dia':
+      Qft3Dia=Valor
+      Qm3Dia= 0.02832*Qft3Dia
+      QLDia= 28.32*Qft3Dia
+      Qbblhora= 0.007421*Qft3Dia
+      QbblDia= 0.1781*Qft3Dia
+      Qgalmin= 0.005195*Qft3Dia
+      Qgalhora= 0.3117*Qft3Dia
+      QgalDia= 7.481*Qft3Dia
+      Resultados=[Qm3Dia,QLDia,Qbblhora,QbblDia,Qgalmin,Qgalhora,QgalDia,Qft3Dia]
+
+  Unidades=['m^3/Dia', 'L/Dia', 'bbl/hora','bbl/Dia','gal/min', 'gal/hora', 'gal/Dia','ft^3/día']
+  Nombres=['Metro cúbico por dia','Litro por dia','Barriles por hora','Barriles por dia',
+              'Galones por minuto', 'Galones por hora', 'Galones por día','Pies cúbicos por día']
+  for i in range(0, len(Resultados)):
+    Resultados[i]=round(Resultados[i],4)
+  
+  import plotly.graph_objects as go
+  fig = go.Figure(data=[go.Table(header=dict(values=['<b>Nombres<b>','<b>Resultados<b>','<b>Unidades<b>'],
+                                             line_color='darkslategray',
+                                             font=dict(color='black',size=14)),
+                                 cells=dict(values=[Nombres,Resultados,Unidades],
+                                            line_color='darkslategray')
+  )])
+  fig.update_layout(height=220, width=700,margin=dict(r=10, l=10, t=10, b=0))
+  fig.show()
+  
+ def ConvertirDensidad (Magnitud,Unidad_Densidad,Valor):
+  if Unidad_Densidad=="Kg/m^3":
+      Qkgm3=Valor
+      QLkgL= 0.001*Qkgm3
+      QgL= 1*Qkgm3
+      Qmgml= 1*Qkgm3
+      Qlbft3= 0.06243*Qkgm3
+      Qlbgal= 0.008345*Qkgm3
+      Resultados=[Qkgm3,QLkgL,QgL,Qmgml,Qlbft3,Qlbgal]
+        
+  if Unidad_Densidad=="Kg/L":
+      QLkgL=Valor
+      Qkgm3= 1000*QLkgL
+      QgL= 1000*QLkgL
+      Qmgml= 1000*QLkgL
+      Qlbft3= 62.43*QLkgL
+      Qlbgal= 8.345*QLkgL
+      Resultados=[Qkgm3,QLkgL,QgL,Qmgml,Qlbft3,Qlbgal]
+      
+  if Unidad_Densidad== "g/L":
+      QgL=Valor
+      Qkgm3= 1*QgL
+      QLkgL= 0.001*QgL
+      Qmgml= 1*QgL
+      Qlbft3= 0.06243*QgL
+      Qlbgal= 0.008345*QgL
+      Resultados=[Qkgm3,QLkgL,QgL,Qmgml,Qlbft3,Qlbgal]
+      
+  if Unidad_Densidad=="mg/mL":
+      Qmgml=Valor
+      Qkgm3= 1*Qmgml
+      QLkgL= 0.001*Qmgml
+      QgL= 1*Qmgml
+      Qlbft3= 0.06243*Qmgml
+      Qlbgal= 0.008345*Qmgml
+      Resultados=[Qkgm3,QLkgL,QgL,Qmgml,Qlbft3,Qlbgal]
+      
+  if Unidad_Densidad=="lb/ft^3":
+      Qlbft3=Valor
+      Qkgm3= 16.02*Qlbft3
+      QLkgL= 0.01602*Qlbft3
+      QgL= 16.02*Qlbft3
+      Qmgml= 16.02*Qlbft3
+      Qlbgal= 0.1337*Qlbft3
+      Resultados=[Qkgm3,QLkgL,QgL,Qmgml,Qlbft3,Qlbgal]
+      
+  if Unidad_Densidad== "lb/gal":
+      Qlbgal=Valor
+      Qkgm3= 119.8*Qlbgal
+      QLkgL= 0.1198*Qlbgal
+      QgL= 119.8*Qlbgal
+      Qmgml= 119.8*Qlbgal
+      Qlbft3= 7.481*Qlbgal
+      Resultados=[Qkgm3,QLkgL,QgL,Qmgml,Qlbft3,Qlbgal]
+
+  Unidades=["Kg/m^3", "Kg/L", "g/L","mg/mL","lb/ft^3", "lb/gal"]
+  Nombres=['Kilogramo por metro cúbico','Kilogramo por litro','Gramo por litro',
+            'Miligramo por mililitro','Libras por pie cúbico', 'Libras por galón']
+  for i in range(0, len(Resultados)):
+    Resultados[i]=round(Resultados[i],4)
+  
+  import plotly.graph_objects as go
+  fig = go.Figure(data=[go.Table(header=dict(values=['<b>Nombres<b>','<b>Resultados<b>','<b>Unidades<b>'],
+                                             line_color='darkslategray',
+                                             font=dict(color='black',size=14)),
+                                 cells=dict(values=[Nombres,Resultados,Unidades],
+                                            line_color='darkslategray')
+  )])
+  fig.update_layout(height=180, width=700,margin=dict(r=10, l=10, t=10, b=0))
+  fig.show()
+  
+ def ConvertirPresion(Magnitud,Unidad_Presion,Valor):
+  if Unidad_Presion=='bar':
+      Pbar=Valor
+      PPas= 100000*Pbar
+      PKpas= 100*Pbar
+      PKgfcm2= 1.02*Pbar
+      PKgfm2= 10197*Pbar
+      PNm2= 100000*Pbar
+      Plbin2= 14.5*Pbar
+      Plbft2= 2089*Pbar
+      Resultados=[Pbar,PPas,PKpas,PKgfcm2,PKgfm2,PNm2,Plbin2,Plbft2]
+      
+  if Unidad_Presion=='Pa':
+      PPas=Valor
+      Pbar=0.00001*PPas
+      PKpas= 0.001*PPas
+      PKgfcm2= 0.0000102*PPas
+      PKgfm2= 0.102*PPas
+      PNm2= 1*PPas
+      Plbin2= 0.000145*PPas
+      Plbft2= 0.02089*PPas
+      Resultados=[Pbar,PPas,PKpas,PKgfcm2,PKgfm2,PNm2,Plbin2,Plbft2]
+  
+  if Unidad_Presion=='KPa':
+      PKpas=Valor
+      Pbar=0.01*PKpas
+      PPas= 1000*PKpas
+      PKgfcm2= 0.0102*PKpas
+      PKgfm2= 102*PKpas
+      PNm2= 1000*PKpas
+      Plbin2= 0.145*PKpas
+      Plbft2= 20.89*PKpas
+      Resultados=[Pbar,PPas,PKpas,PKgfcm2,PKgfm2,PNm2,Plbin2,Plbft2]
+  
+  if Unidad_Presion=='kgf/cm^2':
+      PKgfcm2=Valor
+      Pbar=0.9807*PKgfcm2
+      PPas= 98067*PKgfcm2
+      PKpas= 98.07*PKgfcm2
+      PKgfm2= 10000*PKgfcm2
+      PNm2= 98067*PKgfcm2
+      Plbin2= 14.22*PKgfcm2
+      Plbft2= 2048*PKgfcm2
+      Resultados=[Pbar,PPas,PKpas,PKgfcm2,PKgfm2,PNm2,Plbin2,Plbft2]
+      
+  if Unidad_Presion=='kgf/m^2':
+      PKgfm2=Valor
+      Pbar=0.00009807*PKgfm2
+      PPas= 9.807*PKgfm2
+      PKpas= 0.009807*PKgfm2
+      PKgfcm2= 0.0001*PKgfm2
+      PNm2= 9.807*PKgfm2
+      Plbin2= 0.001422*PKgfm2
+      Plbft2= 0.2048*PKgfm2
+      Resultados=[Pbar,PPas,PKpas,PKgfcm2,PKgfm2,PNm2,Plbin2,Plbft2]
+  
+  if Unidad_Presion=='N/m^2':
+      PNm2=Valor
+      Pbar=0.00001*PNm2
+      PPas= 1*PNm2
+      PKpas= 0.001*PNm2
+      PKgfcm2= 0.0000102*PNm2
+      PKgfm2= 0.102*PNm2
+      Plbin2= 0.000145*PNm2
+      Plbft2= 0.02089*PNm2
+      Resultados=[Pbar,PPas,PKpas,PKgfcm2,PKgfm2,PNm2,Plbin2,Plbft2]
+  
+  if Unidad_Presion=='lb/in^2':
+      Plbin2=Valor
+      Pbar=0.06895*Plbin2
+      PPas= 6895*Plbin2
+      PKpas= 6.895*Plbin2
+      PKgfcm2= 0.07031*Plbin2
+      PKgfm2= 703.1*Plbin2
+      PNm2= 6895*Plbin2
+      Plbft2= 114*Plbin2
+      Resultados=[Pbar,PPas,PKpas,PKgfcm2,PKgfm2,PNm2,Plbin2,Plbft2]
+      
+  if Unidad_Presion=='lb/ft^2':
+      Plbft2=Valor
+      Pbar=0.0004788*Plbft2
+      PPas= 47.88*Plbft2
+      PKpas=0.04788*Plbft2
+      PKgfcm2= 0.0004882*Plbft2
+      PKgfm2= 4.882*Plbft2
+      PNm2= 47.88*Plbft2
+      Plbin2= 0.006944*Plbft2
+      Resultados=[Pbar,PPas,PKpas,PKgfcm2,PKgfm2,PNm2,Plbin2,Plbft2]
+
+  Unidades=['bar','Pa', 'KPa', 'kgf/cm^2','kgf/m^2','N/m^2', 'lb/in^2', 'lb/ft^2']
+  Nombres=['bar','Pascal','Kilopascal','Kilogramo por centímetro cuadrado','Kilogramo por metro cuadrado',
+            'Newton por metro cuadrado','Libras por pulgada cuadrada','Libras por pie cuadrado']
+  for i in range(0, len(Resultados)):
+    Resultados[i]=round(Resultados[i],4)
+  
+  import plotly.graph_objects as go
+  fig = go.Figure(data=[go.Table(header=dict(values=['<b>Nombres<b>','<b>Resultados<b>','<b>Unidades<b>'],
+                                             line_color='darkslategray',
+                                             font=dict(color='black',size=14)),
+                                 cells=dict(values=[Nombres,Resultados,Unidades],
+                                            line_color='darkslategray')
+  )])
+  fig.update_layout(height=220, width=700,margin=dict(r=10, l=10, t=10, b=0))
+  fig.show()
+  
+  
